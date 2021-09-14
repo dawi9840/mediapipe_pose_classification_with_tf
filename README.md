@@ -3,6 +3,9 @@
 Use mediapipe holistic model to get 33 landmarks of body and input to a simple custom model with tensorflow 2.X for training pose classification.
 The idea is from this repo: [classify_pose_with_mediapipe](https://github.com/dawi9840/classify_pose_with_mediapipe.git).
 
+# Flowchart  
+![aaa](https://user-images.githubusercontent.com/19554347/133230193-2f448313-e3ee-4217-afe9-f577e5038206.PNG)
+
 
 # File description  
 

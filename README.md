@@ -8,7 +8,7 @@ The idea is from this repo: [classify_pose_with_mediapipe](https://github.com/da
 
 
 # Demo  
-![image alt text](https://user-images.githubusercontent.com/19554347/133714099-e91ecf49-43a1-472b-a464-fcc2748a4921.png)[link text](https://youtu.be/Y9o8pkX0M-8)
+[![image alt text](https://user-images.githubusercontent.com/19554347/133714099-e91ecf49-43a1-472b-a464-fcc2748a4921.png)](https://youtu.be/Y9o8pkX0M-8)
 
 # File description  
 

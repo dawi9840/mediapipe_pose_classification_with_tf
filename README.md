@@ -17,11 +17,11 @@ The idea is from this repo: [classify_pose_with_mediapipe](https://github.com/da
 **model_train_pose.py**- Using input features which read from the training set csv file and input to Keras model for training pose classification.
 With training done which can save the model and weights. Finallly, convert to TFlite model.  
 
-**model_inference_demo.py**-  Demo the result about using TFLite model inference with mediapipe for output.
+**model_inference_demo.py**-  Demo the result about using TFLite model inference with mediapipe for output.  
 
+## Install  
 
-
-
+**Conda virtual env**  
 ```bash
 
 conda create --name [env_name]  python=3.8

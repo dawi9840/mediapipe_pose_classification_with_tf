@@ -7,7 +7,7 @@ The idea is from this repo: [classify_pose_with_mediapipe](https://github.com/da
 ![aaa](https://user-images.githubusercontent.com/19554347/133230193-2f448313-e3ee-4217-afe9-f577e5038206.PNG)
 
 
-# Demo  
+# Result    
 [![image alt text](https://user-images.githubusercontent.com/19554347/133714099-e91ecf49-43a1-472b-a464-fcc2748a4921.png)](https://youtu.be/Y9o8pkX0M-8)
 
 # File description  

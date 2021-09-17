@@ -7,6 +7,9 @@ The idea is from this repo: [classify_pose_with_mediapipe](https://github.com/da
 ![aaa](https://user-images.githubusercontent.com/19554347/133230193-2f448313-e3ee-4217-afe9-f577e5038206.PNG)
 
 
+# Demo  
+![Screenshot from 2021-09-17 10-18-28](https://user-images.githubusercontent.com/19554347/133714099-e91ecf49-43a1-472b-a464-fcc2748a4921.png)(https://youtu.be/Y9o8pkX0M-8)
+
 # File description  
 
 **dataset_create.py**- To create training datsset and testing dataset with mediapipe. With mediapipe holistic model to record the landmarks position (x, y, z, visibility) into a csv file.  

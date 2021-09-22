@@ -4,8 +4,7 @@ Use mediapipe holistic model to get 33 landmarks of body and input to a simple c
 The idea is from this repo: [classify_pose_with_mediapipe](https://github.com/dawi9840/classify_pose_with_mediapipe.git).
 
 # Flowchart  
-![aaa](https://user-images.githubusercontent.com/19554347/133230193-2f448313-e3ee-4217-afe9-f577e5038206.PNG)
-
+![Capture](https://user-images.githubusercontent.com/19554347/134291948-d762059b-b6a7-40bf-bb04-a4786a4f1abf.PNG)
 
 # Result    
 [![image alt text](https://user-images.githubusercontent.com/19554347/133714099-e91ecf49-43a1-472b-a464-fcc2748a4921.png)](https://youtu.be/Y9o8pkX0M-8)

@@ -4,6 +4,7 @@ import glob
 import os
 import numpy as np
 
+
 class color:
     # Color difine
     purple = (245,66,230)
@@ -248,7 +249,7 @@ if __name__ == '__main__':
         'functional_reach_8s.mp4',
         'FR_t1.mp4',
     ]
-    
+
     # directory = 'half_squat'
 
     # # Parent Directory path

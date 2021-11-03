@@ -38,7 +38,7 @@ def camera_info(cap):
 
 
 def mediapipe_detections(cap, out_video=None):
-    ''' Make Some Detections with a video. 
+    ''' Make mediapipe detections with a video (or use camera). 
     out_video default is None, whitch means not save output video.
     If want save result video, we can specific out_video=['result_out.mp4].
     '''
@@ -248,9 +248,7 @@ if __name__ == '__main__':
         'functional_reach_8s.mp4',
         'FR_t1.mp4',
     ]
-
-    # mediapipe_detections(cap=cv2.VideoCapture(video_path[2]))
-
+    
     # directory = 'half_squat'
 
     # # Parent Directory path
@@ -259,12 +257,9 @@ if __name__ == '__main__':
     # os.mkdir(path)  # Create the directory in path.
     # extract_images(cap=cv2.VideoCapture(video_path[5]), str_class=directory)
     
-    # mediapipe_detections(cap=cv2.VideoCapture('./functional_reach_18s.mp4'))
-
     functional_reach = 'FR_t1_mp'
     # extract_mediapipe_images(cap=cv2.VideoCapture(video_path[1]), str_class=functional_reach)
     # extract_images(cap=cv2.VideoCapture(video_path[1]), str_class=functional_reach)
+
     # mediapipe_detections(cap=cv2.VideoCapture(video_path[1]), out_video='test.mp4')
     mediapipe_detections(cap=cv2.VideoCapture(video_path[1]))
-    
-    

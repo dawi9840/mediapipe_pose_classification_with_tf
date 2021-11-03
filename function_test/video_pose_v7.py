@@ -2,6 +2,15 @@ import cv2
 import mediapipe as mp
 import glob
 import os
+import numpy as np
+
+class color:
+    # Color difine
+    purple = (245,66,230)
+    blue = (245,117,66)
+    red = (0, 0, 255)
+    green = (0, 255, 0)
+
 
 def camera_info(cap):
     if (cap.isOpened() == False):
@@ -28,19 +37,26 @@ def camera_info(cap):
     cv2.destroyAllWindows()
 
 
-def mediapipe_detections(cap):
-    '''# Make Some Detections with a video # '''
-    # Color difine
-    color_pose1 = (245,117,66)
-    color_pose2 = (245,66,230)
-
+def mediapipe_detections(cap, out_video=None):
+    ''' Make Some Detections with a video. 
+    out_video default is None, whitch means not save output video.
+    If want save result video, we can specific out_video=['result_out.mp4].
+    '''
     if (cap.isOpened() == False):
         print("Error opening the video file.")
     else:
-        input_fps = cap.get(cv2.CAP_PROP_FPS)
-        frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        print(f'Frames per second: {input_fps}')
-        print(f'Frame count: {frame_count}')
+        input_fps, frame_count = cap.get(cv2.CAP_PROP_FPS), int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        cap_w, cap_h = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        print(f'Frames Per Second: {input_fps}')
+        print(f'frame count: {frame_count}')
+        print(f'w: {cap_w}, h:{cap_h}')
+
+    if out_video == None:
+        pass
+    else:
+        output_fps = input_fps - 1
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v') # 輸出附檔名為 mp4
+        out = cv2.VideoWriter(out_video, fourcc, output_fps, (cap_w, cap_h))
 
     mp_drawing = mp.solutions.drawing_utils # Drawing helpers.
     mp_holistic = mp.solutions.holistic     # Mediapipe Solutions.
@@ -57,9 +73,24 @@ def mediapipe_detections(cap):
                 # Make Detections
                 results = holistic.process(image)
                 # print(results.face_landmarks)
-                # landmarks = results.pose_landmarks.landmark
-                # print(f'nose_x: {landmarks[0].x}')
-                # print(f'nose_y: {landmarks[0].y}')
+                
+                try:
+                    landmarks = results.pose_landmarks.landmark
+                    # print(f'nose_x: {landmarks[0].x}')
+                    # print(f'nose_y: {landmarks[0].y}')
+                    
+                    # Angle use example
+                    l_elbow_x, l_elbow_y = landmarks[13].x * cap_w, landmarks[13].y * cap_h
+                    l_shoulder_x, l_shoulder_y = landmarks[11].x * cap_w, landmarks[11].y * cap_h
+                    l_hip_x, l_hip_y = landmarks[23].x * cap_w, landmarks[23].y * cap_h
+
+                    elbow = [l_elbow_x, l_elbow_y]
+                    shoulder = [l_shoulder_x, l_shoulder_y]
+                    hip = [l_hip_x, l_hip_y]
+                    angle = calculate_angle(elbow, shoulder, hip)
+                    print(f'angle: {angle}')
+                except:
+                    print('Cannnot get the landmarks, plz check again!')
 
                 # Recolor image back to BGR for rendering
                 image.flags.writeable = True   
@@ -68,9 +99,14 @@ def mediapipe_detections(cap):
                 # Pose Detections
                 mp_drawing.draw_landmarks(
                     image, results.pose_landmarks, mp_holistic.POSE_CONNECTIONS, 
-                    mp_drawing.DrawingSpec(color=color_pose1, thickness=2, circle_radius=4),
-                    mp_drawing.DrawingSpec(color=color_pose2, thickness=2, circle_radius=2)
+                    mp_drawing.DrawingSpec(color=color.blue, thickness=2, circle_radius=4),
+                    mp_drawing.DrawingSpec(color=color.purple, thickness=2, circle_radius=2)
                 )
+
+                if out_video == None:
+                    pass
+                else:
+                    out.write(image)
 
                 cv2.imshow('Raw Video Feed', image)
 
@@ -82,63 +118,6 @@ def mediapipe_detections(cap):
     print('Done.')
     cap.release()
     cv2.destroyAllWindows()
-
-
-def save_mediapipe_detections(cap, out_video):
-    if (cap.isOpened() == False):
-        print("Error opening the video file.")
-    else:
-        input_fps = cap.get(cv2.CAP_PROP_FPS)
-        frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        output_fps = input_fps - 1
-        print(f'Frames per second: {input_fps}')
-        print(f'Frame count: {frame_count}')
-
-    w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    print(f'video_w: {w}, video_h: {h}')
-
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v') # 輸出附檔名為 mp4
-    out = cv2.VideoWriter(out_video, fourcc, output_fps, (w, h))
-    
-    mp_drawing = mp.solutions.drawing_utils
-    mp_pose = mp.solutions.pose
-
-    ## Setup mediapipe instance
-    with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
-        while cap.isOpened():
-            ret, frame = cap.read()
-            if ret == True:
-                # Recolor image to RGB
-                image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                image.flags.writeable = False
-
-                # Make detection
-                results = pose.process(image)
-
-                # Recolor back to BGR
-                image.flags.writeable = True
-                image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-
-                # Render detections
-                mp_drawing.draw_landmarks(
-                    image, results.pose_landmarks, 
-                    mp_pose.POSE_CONNECTIONS,
-                    mp_drawing.DrawingSpec(color=(245,117,66), thickness=2, circle_radius=2), 
-                    mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2)
-                    )               
-                out.write(image)
-                cv2.imshow('Mediapipe Feed', image)
-
-                if cv2.waitKey(10) & 0xFF == ord('q'):
-                    break
-            else:
-                break
-        
-        print('Done.')
-        cap.release()
-        out.release()
-        cv2.destroyAllWindows()
 
 
 def extract_images(cap, str_class):
@@ -249,6 +228,20 @@ def img_to_video(input_imgs_floder, output_video):
     print('create done!')
 
 
+def calculate_angle(a,b,c):
+    a = np.array(a) # First
+    b = np.array(b) # Mid
+    c = np.array(c) # End
+    
+    radians = np.arctan2(c[1]-b[1], c[0]-b[0]) - np.arctan2(a[1]-b[1], a[0]-b[0])
+    angle = np.abs(radians*180.0/np.pi)
+    
+    if angle >180.0:
+        angle = 360-angle
+        
+    return angle 
+
+
 if __name__ == '__main__':
 
     video_path = [
@@ -267,12 +260,11 @@ if __name__ == '__main__':
     # extract_images(cap=cv2.VideoCapture(video_path[5]), str_class=directory)
     
     # mediapipe_detections(cap=cv2.VideoCapture('./functional_reach_18s.mp4'))
-    # save_mediapipe_detections(cap=cv2.VideoCapture('./functional_reach_18s.mp4'), out_video='./fun_reach_out.mp4')
-
-
 
     functional_reach = 'FR_t1_mp'
-    extract_mediapipe_images(cap=cv2.VideoCapture(video_path[1]), str_class=functional_reach)
+    # extract_mediapipe_images(cap=cv2.VideoCapture(video_path[1]), str_class=functional_reach)
     # extract_images(cap=cv2.VideoCapture(video_path[1]), str_class=functional_reach)
+    # mediapipe_detections(cap=cv2.VideoCapture(video_path[1]), out_video='test.mp4')
+    mediapipe_detections(cap=cv2.VideoCapture(video_path[1]))
     
     

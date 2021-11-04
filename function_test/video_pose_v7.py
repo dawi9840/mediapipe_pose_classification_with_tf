@@ -41,7 +41,7 @@ def camera_info(cap):
 def mediapipe_detections(cap, out_video=None):
     ''' Make mediapipe detections with a video (or use camera). 
     Parameter 'out_video' which default is None, it means not save output video.
-    If want save result video, we can specific out_video=['result_out.mp4].
+    If want save result video, we can specific out_video=['result_out.mp4'].
     '''
     if (cap.isOpened() == False):
         print("Error opening the video file.")

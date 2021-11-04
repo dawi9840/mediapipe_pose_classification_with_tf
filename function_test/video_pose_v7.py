@@ -40,7 +40,7 @@ def camera_info(cap):
 
 def mediapipe_detections(cap, out_video=None):
     ''' Make mediapipe detections with a video (or use camera). 
-    out_video default is None, whitch means not save output video.
+    Parameter 'out_video' which default is None, it means not save output video.
     If want save result video, we can specific out_video=['result_out.mp4].
     '''
     if (cap.isOpened() == False):
@@ -75,12 +75,12 @@ def mediapipe_detections(cap, out_video=None):
                 results = holistic.process(image)
                 # print(results.face_landmarks)
                 
+                # Angle use example
                 try:
                     landmarks = results.pose_landmarks.landmark
                     # print(f'nose_x: {landmarks[0].x}')
                     # print(f'nose_y: {landmarks[0].y}')
                     
-                    # Angle use example
                     l_elbow_x, l_elbow_y = landmarks[13].x * cap_w, landmarks[13].y * cap_h
                     l_shoulder_x, l_shoulder_y = landmarks[11].x * cap_w, landmarks[11].y * cap_h
                     l_hip_x, l_hip_y = landmarks[23].x * cap_w, landmarks[23].y * cap_h

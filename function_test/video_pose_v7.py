@@ -3,6 +3,7 @@ import mediapipe as mp
 import glob
 import os
 import numpy as np
+from matplotlib import pyplot as plt
 
 
 class color:
@@ -11,6 +12,7 @@ class color:
     blue = (245,117,66)
     red = (0, 0, 255)
     green = (0, 255, 0)
+    black = (0, 0, 0)
 
 
 def camera_info(cap):
@@ -36,6 +38,77 @@ def camera_info(cap):
     print('Done.')
     cap.release()
     cv2.destroyAllWindows()
+
+
+def show_a_img(img):
+    img_bgr = cv2.imread(img)
+    h, w = img_bgr.shape[0], img_bgr.shape[1]
+    print(f'h: {h}, w: {w}')
+
+    # BGR to RGB
+    # img_rgb = img_bgr[:,:,::-1]
+    # img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
+
+    # cv2.line(影像, 開始座標, 結束座標, 顏色, 線條寬度)
+    # cv2.line(img_rgb, (150, 0), (150, 100), color.red, 5)
+    # cv2.line(img_rgb, (20,10), (100,10), color.blue, 2)
+
+    # new_x = int(w/2)
+    new_x = 265
+
+    cv2.line(img_bgr, (new_x, 0), (new_x, h), color.red, 6)
+
+    # BGR to RGB
+    img_rgb = img_bgr[:,:,::-1]  
+
+    plt.imshow(img_rgb)
+    plt.show()
+
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+
+def save_mp_img(IMAGE_FILES):
+    # For static mediapipe detection images.
+
+    mp_drawing = mp.solutions.drawing_utils
+    mp_drawing_styles = mp.solutions.drawing_styles
+    mp_holistic = mp.solutions.holistic
+    
+    # IMAGE_FILES = []
+    with mp_holistic.Holistic( static_image_mode=True, model_complexity=2) as holistic:
+        for idx, file in enumerate(IMAGE_FILES):
+            image = cv2.imread(file)
+            image_height, image_width, _ = image.shape
+
+            # Recolor Feed
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            image.flags.writeable = False  
+
+            # Convert the BGR image to RGB before processing.
+            results = holistic.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+
+            annotated_image = image.copy()
+
+            # Recolor image back to BGR for rendering
+            annotated_image.flags.writeable = True
+            annotated_image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+            
+            # Pose Detections
+            mp_drawing.draw_landmarks(
+                annotated_image, results.pose_landmarks, mp_holistic.POSE_CONNECTIONS, 
+                mp_drawing.DrawingSpec(color=color.blue, thickness=2, circle_radius=4),
+                mp_drawing.DrawingSpec(color=color.purple, thickness=1, circle_radius=2)
+            )
+
+            # BGR to RGB
+            img_rgb = annotated_image[:,:,::-1] 
+            cv2.imwrite('./annotated_image' + str(idx) + '.png', annotated_image)
+
+            plt.imshow(img_rgb)
+            plt.show()
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
 
 
 def mediapipe_detections(cap, out_video=None):
@@ -237,7 +310,7 @@ def calculate_angle(a,b,c):
     radians = np.arctan2(c[1]-b[1], c[0]-b[0]) - np.arctan2(a[1]-b[1], a[0]-b[0])
     angle = np.abs(radians*180.0/np.pi)
     
-    if angle >180.0:
+    if angle > 180.0:
         angle = 360-angle
         
     return angle 
@@ -263,4 +336,6 @@ if __name__ == '__main__':
     # extract_images(cap=cv2.VideoCapture(video_path[1]), str_class=functional_reach)
 
     # mediapipe_detections(cap=cv2.VideoCapture(video_path[1]), out_video='test.mp4')
-    mediapipe_detections(cap=cv2.VideoCapture(video_path[1]))
+    # mediapipe_detections(cap=cv2.VideoCapture(video_path[1]))
+    # show_a_img(img='sample_FR_t1.png')
+    save_mp_img(IMAGE_FILES=['sample_FR_t1.png'])

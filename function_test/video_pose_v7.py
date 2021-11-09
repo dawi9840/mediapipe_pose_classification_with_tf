@@ -68,7 +68,7 @@ def show_a_img(img):
     cv2.destroyAllWindows()
 
 
-def save_mp_img(IMAGE_FILES):
+def save_mp_img(IMAGE_FILES, file_name):
     # For static mediapipe detection images.
 
     mp_drawing = mp.solutions.drawing_utils
@@ -103,7 +103,7 @@ def save_mp_img(IMAGE_FILES):
 
             # BGR to RGB
             img_rgb = annotated_image[:,:,::-1] 
-            cv2.imwrite('./annotated_image' + str(idx) + '.png', annotated_image)
+            cv2.imwrite(file_name + str(idx) + '_out.png', annotated_image)
 
             plt.imshow(img_rgb)
             plt.show()
@@ -338,4 +338,4 @@ if __name__ == '__main__':
     # mediapipe_detections(cap=cv2.VideoCapture(video_path[1]), out_video='test.mp4')
     # mediapipe_detections(cap=cv2.VideoCapture(video_path[1]))
     # show_a_img(img='sample_FR_t1.png')
-    save_mp_img(IMAGE_FILES=['sample_FR_t1.png'])
+    save_mp_img(IMAGE_FILES=['sample_FR_t1.png'], file_name='sample_FR_t1.png')
